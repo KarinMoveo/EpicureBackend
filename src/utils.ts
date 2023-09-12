@@ -11,7 +11,7 @@ function isRestaurantOpen(from: string, to: string): boolean {
 	return now >= fromTime && now <= toTime;
 }
 
-export function filterRestaurants({ minPrice = 12, maxPrice = 357, distance = 100, rating, category, allRestaurants }: any) {
+export function filterRestaurants({allRestaurants, category, minPrice = 12, maxPrice = 357, distance = 100, rating = 31 }: any) {
 	const tempRestaurants: restaurant[] = [];
 	const popularity = category === "Most Popular" ? 4 : 0;
 	const restaurantOpeningYear = category === "New" ? 2020 : 0;
@@ -20,13 +20,16 @@ export function filterRestaurants({ minPrice = 12, maxPrice = 357, distance = 10
 		const [day, month, year] = restaurant.openingDate.split(".");
 		const isRestaurantCurrentlyOpen = category !== "Open Now" || isRestaurantOpen(restaurant.from, restaurant.to);
 
+        const restaurantRatingBitWise = 1 << (restaurant.popularity - 1) 
+
 		if (
 			restaurant.popularity >= popularity &&
 			Number(year) >= restaurantOpeningYear &&
 			isRestaurantCurrentlyOpen &&
 			restaurant.averagePrice >= minPrice &&
 			restaurant.averagePrice <= maxPrice &&
-			restaurant.distance <= distance
+			restaurant.distance <= distance &&
+            (rating | restaurantRatingBitWise) == rating
 		) {
 			tempRestaurants.push(restaurant);
 		}

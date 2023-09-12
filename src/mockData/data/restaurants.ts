@@ -7,9 +7,8 @@ const restaurantsMockData : restaurant[]= [
     {
         name: 'Claro',
         chef: 'Yossi Shitrit',
-        // rating: fourStars,
         popularity: 4,
-        // image: claro,
+        image: "http://localhost:5000/restaurants/claro.png",
         address: "Ha-Arba'a Street, Tel Aviv-Yafo",
         from: '10:00',
         to: '22:00',
@@ -24,9 +23,8 @@ const restaurantsMockData : restaurant[]= [
     {
         name: 'Lumina',
         chef: 'Meir Adoni',
-        // rating: threeStars,
         popularity: 3,
-        // image: lumina,
+        image: "http://localhost:5000/restaurants/lumina.png",
         address: 'Eliezer Perry Street, Tel Aviv-Yafo',
         from: '08:00',
         to: '16:00',
@@ -40,9 +38,8 @@ const restaurantsMockData : restaurant[]= [
     {
         name: 'Tiger Lilly',
         chef: 'Asaf Granit',
-        // rating: fourStars,
         popularity: 4,
-        // image: tigerLilly,
+        image: "http://localhost:5000/restaurants/tigerLilly.png",
         address: 'Alof Kalman Magen Street, Tel Aviv-Yafo',
         from: '10:00',
         to: '23:00',

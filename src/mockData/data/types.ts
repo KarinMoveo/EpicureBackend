@@ -10,7 +10,7 @@ export interface restaurant{
     chef: string;
     // rating: string;
     popularity: number;
-    // image: string;
+    image: string;
     address: string;
     from: string;
     to: string;
