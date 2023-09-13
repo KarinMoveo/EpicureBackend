@@ -5,10 +5,10 @@ import {dish} from './types';
 
 const dishesMockData : dish[]= [
   {
-    image: padKiMao,
+    image: "http://localhost:5000/dishes/padKiMao.png",
     name: 'Pad Ki Mao',
     ingredients: 'Shrimps, Glass, Noodles, Kemiri Nuts, Shallots, Lemon Grass, Magic, Chilli Brown Coconut',
-    icon: spicy,
+    icon: "http://localhost:5000/dishesIcons/spicy.svg",
     price: 88,
     side: ['White bread', 'Sticky rice'],
     changes: ['Without peanuts', 'Sticky less spicy'],
@@ -16,10 +16,10 @@ const dishesMockData : dish[]= [
     mealType: ['Lunch', 'Dinner']
   },
   {
-    image: garbanzoFrito,
+    image: "http://localhost:5000/dishes/garbanzoFrito.png",
     name: 'Garbanzo Frito',
     ingredients: 'Polenta fingers, veal cheek, magic chili cured lemon cream, yellow laksa',
-    icon: spicy,
+    icon: "http://localhost:5000/dishesIcons/spicy.svg",
     price: 98,
     side: ['White bread', 'Sticky rice'],
     changes: ['Without peanuts', 'Sticky less spicy'],
@@ -27,10 +27,10 @@ const dishesMockData : dish[]= [
     mealType: ['Lunch', 'Dinner']
   },
   {
-    image: smokedPizza,
+    image: "http://localhost:5000/dishes/smokedPizza.png",
     name: 'Smoked Pizza',
     ingredients: 'Basil dough, cashew "butter", demi-glace, bison & radish',
-    icon: vegan,
+    icon: "http://localhost:5000/dishesIcons/vegan.svg",
     price: 65,
     side: ['White bread', 'Sticky rice'],
     changes: ['Without peanuts', 'Sticky less spicy'],

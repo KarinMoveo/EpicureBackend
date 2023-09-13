@@ -1,4 +1,5 @@
-import { restaurant } from "./mockData/data/types";
+import { toUSVString } from "util";
+import { chef, dish, restaurant } from "./mockData/data/types";
 
 function isRestaurantOpen(from: string, to: string): boolean {
 	const now = new Date();
@@ -36,4 +37,36 @@ export function filterRestaurants({allRestaurants, category, minPrice = 12, maxP
 	});
 
 	return tempRestaurants;
+}
+
+
+export function filterChefs({allChefs, category}: any) {
+	const tempChefs: chef[] = [];
+	const mostViewedChefs = category === "Most Viewed" ? 4 : 0;
+
+	allChefs.forEach((chef: chef) => {
+		
+		if (
+			chef.popularity >= mostViewedChefs &&
+			(category !== "New" || chef.isNew === true)
+			
+			) {
+			tempChefs.push(chef);
+		}
+	});
+
+	return tempChefs;
+}
+
+export function filterDishes({allDishes, category}: any) {
+	const tempDishes: dish[] = [];
+
+	allDishes.forEach((dish: dish) => {
+		
+		if (dish.mealType.includes(category)) {
+				tempDishes.push(dish);
+		}
+	});
+
+	return tempDishes;
 }

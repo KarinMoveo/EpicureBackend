@@ -16,7 +16,9 @@ export async function getAllRestaurantsController(req: Request, res: Response, n
 export async function getPopularRestaurantsController(req: Request, res: Response, next: NextFunction) {
 	try {
 		const allRestaurants = await getAllRestaurants();
-          const popularRestaurants = allRestaurants.filter((restaurant: restaurant)=>restaurant.popularity >= 4).slice(0,3);
+		const popularRestaurants = allRestaurants
+			.filter((restaurant: restaurant) => restaurant.popularity >= 4)
+			.slice(0, 3);
 		return res.json(popularRestaurants);
 	} catch (error) {
 		return res.status(400).json({ status: 400, message: "Oh oh!" });
@@ -24,11 +26,11 @@ export async function getPopularRestaurantsController(req: Request, res: Respons
 }
 
 export async function getRestaurantByIDController(req: Request, res: Response, next: NextFunction) {
-	const {id} = req.params;
+	const { id } = req.params;
 
 	try {
 		const allRestaurants = await getAllRestaurants();
-          const restaurant = allRestaurants.find((restaurant: restaurant)=>restaurant.name === id);
+		const restaurant = allRestaurants.find((restaurant: restaurant) => restaurant.name === id);
 		return res.json(restaurant);
 	} catch (error) {
 		return res.status(400).json({ status: 400, message: "Oh oh!" });

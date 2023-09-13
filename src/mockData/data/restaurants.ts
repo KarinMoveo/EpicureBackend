@@ -1,5 +1,3 @@
-// import {claro, lumina, tigerLilly} from "../assets/restaurants/index";
-// import {oneStar, twoStars, threeStars, fourStars, fiveStars} from '../assets/rating/index';
 import {restaurant} from './types';
 import dishesMockData from './dishes';
 

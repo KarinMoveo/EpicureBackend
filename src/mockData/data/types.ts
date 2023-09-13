@@ -1,14 +1,15 @@
 export interface chef{
     name: string;
-    // image: string;
+    image: string;
     summary: string;
+    popularity: number;
     restaurants: restaurant[];
+    isNew: boolean;
 }
 
 export interface restaurant{
     name: string;
     chef: string;
-    // rating: string;
     popularity: number;
     image: string;
     address: string;
