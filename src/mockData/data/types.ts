@@ -1,4 +1,5 @@
 export interface chef{
+    id: number,
     name: string;
     image: string;
     summary: string;
@@ -16,7 +17,7 @@ export interface restaurant{
     from: string;
     to: string;
     openingDate: string;
-    // dishes: dish[];
+    dishes: dish[];
     averagePrice: number;
     lat: number;
     long: number;

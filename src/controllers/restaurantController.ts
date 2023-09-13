@@ -17,7 +17,7 @@ export async function getPopularRestaurantsController(req: Request, res: Respons
 	try {
 		const allRestaurants = await getAllRestaurants();
 		const popularRestaurants = allRestaurants
-			.filter((restaurant: restaurant) => restaurant.popularity >= 4)
+			.filter((restaurant: restaurant) => restaurant.popularity >= 3)
 			.slice(0, 3);
 		return res.json(popularRestaurants);
 	} catch (error) {

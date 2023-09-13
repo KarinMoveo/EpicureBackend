@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { getAllChefsController, getChefOfTheWeekController } from '../controllers/chefController'; 
+import { deleteChefController, getAllChefsController, getChefOfTheWeekController } from '../controllers/chefController'; 
 
 const router = Router();
 
 router.get('/', getAllChefsController); 
 router.get('/chefOfTheWeek', getChefOfTheWeekController); 
+router.get('/deleteChef/:id', deleteChefController); 
 
 export default router;
