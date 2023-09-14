@@ -1,4 +1,3 @@
-import { toUSVString } from "util";
 import { chef, dish, restaurant } from "./mockData/data/types";
 
 function isRestaurantOpen(from: string, to: string): boolean {

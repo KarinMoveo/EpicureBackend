@@ -6,17 +6,9 @@ export async function getAllChefsController(req: Request, res: Response, next: N
 	try {
 		const allChefs = await getAllChefs();
 		const filteredChefs = filterChefs({ allChefs, ...req.query });
-		return res.status(200).json({ status: 200, message: "Success", data: filteredChefs });
+		return res.json(filteredChefs);
 	} catch (error) {
-		return res
-			.status(500)
-			.json({
-				status: 500,
-				message: "Internal Server Error",
-				error: "Something went wrong while fetching all chefs.",
-			});
-	} finally {
-		return res.status(400).json({ status: 400, message: "Bad Request", error: "Invalid request parameters." });
+		return res.status(400).json({ status: 400, message: "Oh oh!" });
 	}
 }
 
@@ -25,13 +17,9 @@ export async function getChefOfTheWeekController(req: Request, res: Response, ne
 		const allChefs = await getAllChefs();
 		const randomIndex = Math.floor(Math.random() * allChefs.length);
 		const chefOfTheWeek = allChefs[randomIndex];
-		return res.status(200).json({ status: 200, message: "Success", data: chefOfTheWeek });
+		return res.json(chefOfTheWeek);
 	} catch (error) {
-		return res
-			.status(500)
-			.json({ status: 500, message: "Internal Server Error", error: "Unable to fetch Chef of the Week." });
-	} finally {
-		return res.status(400).json({ status: 400, message: "Bad Request", error: "Invalid request parameters." });
+		return res.status(400).json({ status: 400, message: "Oh oh!" });
 	}
 }
 
