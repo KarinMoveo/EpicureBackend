@@ -69,7 +69,8 @@ export async function addChefController(req: Request, res: Response, next: NextF
 
 export async function updateChefController(req: Request, res: Response, next: NextFunction) {
 	try {
-		const { id, name, image } = req.query;
+		const {id} = req.params;
+		const { name, image } = req.query;
 		const allChefs = await getAllChefs();
 
 		if (!name || !image || !id) {

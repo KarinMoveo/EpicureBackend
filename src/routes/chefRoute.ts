@@ -7,6 +7,6 @@ router.get('/', getAllChefsController);
 router.get('/chefOfTheWeek', getChefOfTheWeekController); 
 router.delete('/deleteChef/:id', deleteChefController); 
 router.post('/addChef', addChefController);
-router.put('/updateChef', updateChefController);
+router.put('/updateChef/:id', updateChefController);
 
 export default router;
