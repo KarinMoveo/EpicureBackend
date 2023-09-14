@@ -24,22 +24,46 @@ export async function getChefOfTheWeekController(req: Request, res: Response, ne
 	}
 }
 
-
 export async function deleteChefController(req: Request, res: Response, next: NextFunction) {
 	try {
-	  const {id} = req.params;
-	  const allChefs = await getAllChefs();
-	  const deletedChefIndex = allChefs.findIndex((chef) => chef.id === Number(id));
+		const { id } = req.params;
+		const allChefs = await getAllChefs();
+		const deletedChefIndex = allChefs.findIndex((chef) => chef.id === Number(id));
 
-	  if (deletedChefIndex === -1) {
-		return res.status(404).json({ message: 'Chef not found' });
-	  }
-  
-	  allChefs.splice(deletedChefIndex, 1)
+		if (deletedChefIndex === -1) {
+			return res.status(404).json({ message: "Chef not found" });
+		}
 
-	  return res.status(201).send();
-  
+		allChefs.splice(deletedChefIndex, 1);
+
+		return res.status(201).send();
 	} catch (error) {
-	  res.status(500).json({ message: 'Internal server error' });
+		res.status(500).json({ message: "Internal server error" });
 	}
-  }
+}
+
+export async function addChefController(req: Request, res: Response, next: NextFunction) {
+	try {
+		const { name, image } = req.query;
+
+		if (!name || !image) {
+			return res.status(400).json({ message: "Both name and image are required." });
+		}
+
+		const allChefs = await getAllChefs();
+		const newChef = {
+			name: name as string,
+			image: image as string,
+			id: allChefs.length + 1,
+			summary: "",
+			popularity: 0,
+			restaurants: [],
+			isNew: false,
+		};
+		allChefs.push(newChef);
+
+		return res.status(201).send();
+	} catch (error) {
+		res.status(500).json({ message: "Internal server error" });
+	}
+}
