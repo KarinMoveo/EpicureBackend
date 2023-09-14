@@ -30,13 +30,13 @@ export async function deleteChefController(req: Request, res: Response, next: Ne
 		const allChefs = await getAllChefs();
 		const deletedChefIndex = allChefs.findIndex((chef) => chef.id === Number(id));
 
-		if (deletedChefIndex === -1) {
+		if (!deletedChefIndex) {
 			return res.status(404).json({ message: "Chef not found" });
 		}
 
 		allChefs.splice(deletedChefIndex, 1);
 
-		return res.status(201).send();
+		return res.status(201).json({ message: "Chef deleted successfully." });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" });
 	}
@@ -62,8 +62,33 @@ export async function addChefController(req: Request, res: Response, next: NextF
 		};
 		allChefs.push(newChef);
 
-		return res.status(201).send();
+		return res.status(201).json({ message: "Chef added successfully." });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" });
 	}
 }
+
+export async function updateChefController(req: Request, res: Response, next: NextFunction) {
+	try {
+	  const { id, name, image } = req.query;
+	  const allChefs = await getAllChefs();
+  
+	  if (!name || !image || !id) {
+		return res.status(400).json({ message: "Both name and image are required." });
+	  }
+  
+	  const chefToUpdateIndex = allChefs.findIndex(chef => chef.id === Number(id));
+  
+	  if (chefToUpdateIndex === -1) {
+		return res.status(404).json({ message: "Chef not found." });
+	  }
+  
+	  allChefs[chefToUpdateIndex].name = name as string;
+	  allChefs[chefToUpdateIndex].image = image as string;
+    
+	  return res.status(201).json({ message: "Chef updated successfully." });
+	} catch (error) {
+	  console.error(error);
+	  res.status(500).json({ message: "Internal server error" });
+	}
+  }
