@@ -1,15 +1,22 @@
-import { Request, Response, NextFunction, response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { getAllChefs } from "../services/chefService";
 import { filterChefs } from "../utils";
-import chefsMockData from "../mockData/data/chefs";
 
 export async function getAllChefsController(req: Request, res: Response, next: NextFunction) {
 	try {
 		const allChefs = await getAllChefs();
 		const filteredChefs = filterChefs({ allChefs, ...req.query });
-		return res.json(filteredChefs);
+		return res.status(200).json({ status: 200, message: "Success", data: filteredChefs });
 	} catch (error) {
-		return res.status(400).json({ status: 400, message: "Oh oh!" });
+		return res
+			.status(500)
+			.json({
+				status: 500,
+				message: "Internal Server Error",
+				error: "Something went wrong while fetching all chefs.",
+			});
+	} finally {
+		return res.status(400).json({ status: 400, message: "Bad Request", error: "Invalid request parameters." });
 	}
 }
 
@@ -18,9 +25,13 @@ export async function getChefOfTheWeekController(req: Request, res: Response, ne
 		const allChefs = await getAllChefs();
 		const randomIndex = Math.floor(Math.random() * allChefs.length);
 		const chefOfTheWeek = allChefs[randomIndex];
-		return res.json(chefOfTheWeek);
+		return res.status(200).json({ status: 200, message: "Success", data: chefOfTheWeek });
 	} catch (error) {
-		return res.status(400).json({ status: 400, message: "Oh oh!" });
+		return res
+			.status(500)
+			.json({ status: 500, message: "Internal Server Error", error: "Unable to fetch Chef of the Week." });
+	} finally {
+		return res.status(400).json({ status: 400, message: "Bad Request", error: "Invalid request parameters." });
 	}
 }
 
@@ -70,25 +81,25 @@ export async function addChefController(req: Request, res: Response, next: NextF
 
 export async function updateChefController(req: Request, res: Response, next: NextFunction) {
 	try {
-	  const { id, name, image } = req.query;
-	  const allChefs = await getAllChefs();
-  
-	  if (!name || !image || !id) {
-		return res.status(400).json({ message: "Both name and image are required." });
-	  }
-  
-	  const chefToUpdateIndex = allChefs.findIndex(chef => chef.id === Number(id));
-  
-	  if (chefToUpdateIndex === -1) {
-		return res.status(404).json({ message: "Chef not found." });
-	  }
-  
-	  allChefs[chefToUpdateIndex].name = name as string;
-	  allChefs[chefToUpdateIndex].image = image as string;
-    
-	  return res.status(201).json({ message: "Chef updated successfully." });
+		const { id, name, image } = req.query;
+		const allChefs = await getAllChefs();
+
+		if (!name || !image || !id) {
+			return res.status(400).json({ message: "Both name and image are required." });
+		}
+
+		const chefToUpdateIndex = allChefs.findIndex((chef) => chef.id === Number(id));
+
+		if (chefToUpdateIndex === -1) {
+			return res.status(404).json({ message: "Chef not found." });
+		}
+
+		allChefs[chefToUpdateIndex].name = name as string;
+		allChefs[chefToUpdateIndex].image = image as string;
+
+		return res.status(201).json({ message: "Chef updated successfully." });
 	} catch (error) {
-	  console.error(error);
-	  res.status(500).json({ message: "Internal server error" });
+		console.error(error);
+		res.status(500).json({ message: "Internal server error" });
 	}
-  }
+}
