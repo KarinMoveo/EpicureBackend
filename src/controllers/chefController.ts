@@ -1,12 +1,18 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllChefs } from "../services/chefService";
-import { filterChefs } from "../utils";
+import {
+	addChef,
+	deleteChefByID,
+	getAllChefs,
+	getChefByID,
+	getChefOfTheWeek,
+	updateChefByID,
+} from "../services/chefService";
+import chefsMockData from "../mockData/data/chefs";
 
 export async function getAllChefsController(req: Request, res: Response, next: NextFunction) {
 	try {
 		const allChefs = await getAllChefs();
-		const filteredChefs = filterChefs({ allChefs, ...req.query });
-		return res.json(filteredChefs);
+		return res.json(allChefs);
 	} catch (error) {
 		return res.status(400).json({ status: 400, message: "Oh oh!" });
 	}
@@ -14,9 +20,7 @@ export async function getAllChefsController(req: Request, res: Response, next: N
 
 export async function getChefOfTheWeekController(req: Request, res: Response, next: NextFunction) {
 	try {
-		const allChefs = await getAllChefs();
-		const randomIndex = Math.floor(Math.random() * allChefs.length);
-		const chefOfTheWeek = allChefs[randomIndex];
+		const chefOfTheWeek = await getChefOfTheWeek();
 		return res.json(chefOfTheWeek);
 	} catch (error) {
 		return res.status(400).json({ status: 400, message: "Oh oh!" });
@@ -25,16 +29,7 @@ export async function getChefOfTheWeekController(req: Request, res: Response, ne
 
 export async function deleteChefController(req: Request, res: Response, next: NextFunction) {
 	try {
-		const { id } = req.params;
-		const allChefs = await getAllChefs();
-		const deletedChefIndex = allChefs.findIndex((chef) => chef.id === Number(id));
-
-		if (!deletedChefIndex) {
-			return res.status(404).json({ message: "Chef not found" });
-		}
-
-		allChefs.splice(deletedChefIndex, 1);
-
+		await deleteChefByID(0);
 		return res.status(201).json({ message: "Chef deleted successfully." });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" });
@@ -43,24 +38,7 @@ export async function deleteChefController(req: Request, res: Response, next: Ne
 
 export async function addChefController(req: Request, res: Response, next: NextFunction) {
 	try {
-		const { name, image } = req.query;
-
-		if (!name || !image) {
-			return res.status(400).json({ message: "Both name and image are required." });
-		}
-
-		const allChefs = await getAllChefs();
-		const newChef = {
-			name: name as string,
-			image: image as string,
-			id: allChefs.length + 1,
-			summary: "",
-			popularity: 0,
-			restaurants: [],
-			isNew: false,
-		};
-		allChefs.push(newChef);
-
+		const addedChef = await addChef(chefsMockData[0]);
 		return res.status(201).json({ message: "Chef added successfully." });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" });
@@ -69,23 +47,8 @@ export async function addChefController(req: Request, res: Response, next: NextF
 
 export async function updateChefController(req: Request, res: Response, next: NextFunction) {
 	try {
-		const {id} = req.params;
-		const { name, image } = req.query;
-		const allChefs = await getAllChefs();
-
-		if (!name || !image || !id) {
-			return res.status(400).json({ message: "Both name and image are required." });
-		}
-
-		const chefToUpdateIndex = allChefs.findIndex((chef) => chef.id === Number(id));
-
-		if (chefToUpdateIndex === -1) {
-			return res.status(404).json({ message: "Chef not found." });
-		}
-
-		allChefs[chefToUpdateIndex].name = name as string;
-		allChefs[chefToUpdateIndex].image = image as string;
-
+		const { id } = req.params;
+		await updateChefByID(Number(id), chefsMockData[0]);
 		return res.status(201).json({ message: "Chef updated successfully." });
 	} catch (error) {
 		console.error(error);
