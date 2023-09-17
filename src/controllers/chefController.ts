@@ -31,8 +31,8 @@ export async function deleteChefController(req: Request, res: Response, next: Ne
 	try {
 		await deleteChefByID(0);
 		return res.status(201).json({ message: "Chef deleted successfully." });
-	} catch (error) {
-		res.status(500).json({ message: "Internal server error" });
+	} catch (error : any) {
+		res.status(500).json({ message: error.message});
 	}
 }
 
