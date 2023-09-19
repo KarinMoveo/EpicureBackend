@@ -1,9 +1,9 @@
-import restaurantsMockData from "../mockData/data/restaurants";
 import { restaurant } from "../mockData/data/types";
+import Restaurant from "../models/Restaurant";
 
 export async function getAllRestaurants() {
 	try {
-		const allRestaurants = restaurantsMockData;
+		const allRestaurants = await Restaurant.find().populate("chef");
 		return allRestaurants;
 	} catch (e) {
 		throw Error("Error while Paginating restaurants");
@@ -12,37 +12,57 @@ export async function getAllRestaurants() {
 
 export async function getPopularRestaurants() {
 	try {
-		const allRestaurants = restaurantsMockData;
-		const popularRestaurants = allRestaurants
-			.filter((restaurant: restaurant) => restaurant.popularity >= 3)
-			.slice(0, 3);
-		return popularRestaurants;
+		  const filter = { popularity: { $gte: 3 } };
+		  const popularRestaurants = await Restaurant.find(filter).populate("chef");
+		  return popularRestaurants;
 	} catch (e) {
 		throw Error("Error while Paginating restaurants");
 	}
 }
 
-export async function addRestaurant(restaurant: restaurant) {
+export async function getRestaurantByName(restaurantName: string) {
 	try {
-		return restaurant;
+	  const restaurant = await Restaurant.findOne({ name: restaurantName }).populate("chef");
+  
+	  if (!restaurant) {
+		throw new Error("Restaurant not found");
+	  }
+  
+	  return restaurant;
+	} catch (error) {
+	  throw new Error("Error while getting restaurant by name");
+	}
+  }
+
+export async function addRestaurant(newRestaurantData: restaurant) {
+	try {
+		const newRestaurant = new Restaurant(newRestaurantData);
+		const savedRestaurant = await newRestaurant.save();
+		return savedRestaurant;
 	} catch (e) {
 		console.log(e);
 		throw Error("Error while adding restaurant");
 	}
 }
 
-export async function updateRestaurantByID(id: number, restaurant: restaurant) {
+export async function updateRestaurantByID(id: string, updatedRestaurantData: restaurant) {
 	try {
-		return restaurant;
-	} catch (e) {
-		console.log(e);
-		throw Error("Error while updating restaurant");
+		const existingRestaurant = await Restaurant.findById(id);
+		if (!existingRestaurant) {
+			throw new Error("Restaurant not found");
+		}
+		existingRestaurant.name = updatedRestaurantData.name;
+		existingRestaurant.image = updatedRestaurantData.image;
+		const updatedRestaurant = await existingRestaurant.save();
+		return updatedRestaurant;
+	} catch (error) {
+		throw new Error("Error while updating restaurant by id");
 	}
 }
 
-export async function deleteRestaurantByID(id: number) {
+export async function deleteRestaurantByID(id: string) {
 	try {
-		return id;
+		Restaurant.findByIdAndDelete(id);
 	} catch (e) {
 		console.log(e);
 		throw Error("Error while deleting restaurant");
