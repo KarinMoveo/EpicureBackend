@@ -3,6 +3,7 @@ import {
 	addRestaurant,
 	deleteRestaurantByID,
 	getAllRestaurants,
+	getPopularRestaurants,
 	updateRestaurantByID,
 } from "../services/restaurantService";
 import { filterRestaurants } from "../utils";
@@ -23,10 +24,7 @@ export async function getAllRestaurantsController(req: Request, res: Response, n
 
 export async function getPopularRestaurantsController(req: Request, res: Response, next: NextFunction) {
 	try {
-		const allRestaurants = await getAllRestaurants();
-		const popularRestaurants = allRestaurants
-			.filter((restaurant: restaurant) => restaurant.popularity >= 3)
-			.slice(0, 3);
+		const popularRestaurants = await getPopularRestaurants();
 		return res.json(popularRestaurants);
 	} catch (error) {
 		return res.status(400).json({ status: 400, message: "Oh oh!" });
@@ -48,7 +46,7 @@ export async function getRestaurantByIDController(req: Request, res: Response, n
 export async function deleteRestaurantController(req: Request, res: Response, next: NextFunction) {
 	try {
 		await deleteRestaurantByID(0);
-		return res.status(201).json({ message: "Restaurant deleted successfully." });
+		return res.status(200).json({ message: "Restaurant deleted successfully." });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" });
 	}
@@ -67,7 +65,7 @@ export async function updateRestaurantController(req: Request, res: Response, ne
 	try {
 		const { id } = req.params;
 		await updateRestaurantByID(Number(id), restaurantsMockData[0]);
-		return res.status(201).json({ message: "Restaurant updated successfully." });
+		return res.status(200).json({ message: "Restaurant updated successfully." });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: "Internal server error" });

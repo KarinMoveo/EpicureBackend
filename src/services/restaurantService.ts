@@ -10,6 +10,18 @@ export async function getAllRestaurants() {
 	}
 }
 
+export async function getPopularRestaurants() {
+	try {
+		const allRestaurants = restaurantsMockData;
+		const popularRestaurants = allRestaurants
+			.filter((restaurant: restaurant) => restaurant.popularity >= 3)
+			.slice(0, 3);
+		return popularRestaurants;
+	} catch (e) {
+		throw Error("Error while Paginating restaurants");
+	}
+}
+
 export async function addRestaurant(restaurant: restaurant) {
 	try {
 		return restaurant;
