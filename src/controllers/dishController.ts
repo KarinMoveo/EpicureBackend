@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { addDish, deleteDishByID, getAllDishes, getSignatureDishes, updateDishByID } from "../services/dishService";
-import { filterDishes } from "../utils";
+// import { filterDishes } from "../utils";
+import CustomError from "../shared/CustomError";
 
 // export async function getAllDishesController(req: Request, res: Response, next: NextFunction) {
 // 	try {
@@ -17,7 +18,8 @@ export async function getSignatureDishesController(req: Request, res: Response, 
 		const signatureDishes = await getSignatureDishes();
 		return res.json(signatureDishes);
 	} catch (error) {
-		return res.status(400).json({ status: 400, message: "Oh oh!" });
+		const err = new CustomError('Error in getting signature dishes', 404);
+		next(err);
 	}
 }
 
@@ -27,7 +29,8 @@ export async function deleteDishController(req: Request, res: Response, next: Ne
 		await deleteDishByID(id);
 		return res.status(201).json({ message: "Dish deleted successfully." });
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error" });
+		const err = new CustomError('Error in deleting dish', 404);
+		next(err);
 	}
 }
 
@@ -48,7 +51,8 @@ export async function addDishController(req: Request, res: Response, next: NextF
 		const addedDish = await addDish(newDishData);
 		return res.status(201).json({ message: "Dish added successfully." });
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error" });
+		const err = new CustomError('Error in adding dish', 404);
+		next(err);
 	}
 }
 
@@ -70,7 +74,7 @@ export async function updateDishController(req: Request, res: Response, next: Ne
 		await updateDishByID(id, newDishData);
 		return res.status(201).json({ message: "Dish updated successfully." });
 	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "Internal server error" });
+		const err = new CustomError('Error in updating dish', 404);
+		next(err);
 	}
 }

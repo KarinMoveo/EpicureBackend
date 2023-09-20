@@ -8,6 +8,7 @@ import {
 	updateRestaurantByID,
 } from "../services/restaurantService";
 import { filterRestaurants } from "../utils";
+import CustomError from "../shared/CustomError";
 
 
 export async function getAllRestaurantsController(req: Request, res: Response, next: NextFunction) {
@@ -16,17 +17,17 @@ export async function getAllRestaurantsController(req: Request, res: Response, n
 		const filteredRestaurants = filterRestaurants({ ...req.query, allRestaurants });
 		return res.json(filteredRestaurants);
 	} catch (error) {
-		return res.status(400).json({ status: 400, message: "Oh oh!" });
-	}
+		const err = new CustomError('Error in getting restaurants', 404);
+		next(err);	}
 }
 
 export async function getPopularRestaurantsController(req: Request, res: Response, next: NextFunction) {
 	try {
 		const popularRestaurants = await getPopularRestaurants();
 		return res.json(popularRestaurants);
-	} catch (error) {
-		return res.status(400).json({ status: 400, message: "Oh oh!" });
-	}
+	} catch (error : any) {
+		const err = new CustomError('Error in getting popular restaurants', 404);
+		next(err);	}
 }
 
 export async function getRestaurantByNameController(req: Request, res: Response, next: NextFunction) {
@@ -36,8 +37,8 @@ export async function getRestaurantByNameController(req: Request, res: Response,
 		const restaurant = await getRestaurantByName(name);
 		return res.json(restaurant);
 	} catch (error) {
-		return res.status(500).json({ status: 500, message: "Internal server error" });
-	}
+		const err = new CustomError('Error in getting restaurant', 404);
+		next(err);	}
 }
 
 export async function deleteRestaurantController(req: Request, res: Response, next: NextFunction) {
@@ -46,7 +47,8 @@ export async function deleteRestaurantController(req: Request, res: Response, ne
 		await deleteRestaurantByID(id);
 		return res.status(200).json({ message: "Restaurant deleted successfully." });
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error" });
+		const err = new CustomError('Error in deleting restaurant', 404);
+		next(err);
 	}
 }
 
@@ -70,7 +72,8 @@ export async function addRestaurantController(req: Request, res: Response, next:
 		const addedDish = await addRestaurant(newRestaurantData);
 		return res.status(201).json({ message: "Restaurant added successfully." });
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error" });
+		const err = new CustomError('Error in adding restaurant', 404);
+		next(err);
 	}
 }
 
@@ -95,7 +98,7 @@ export async function updateRestaurantController(req: Request, res: Response, ne
 		await updateRestaurantByID(id, newRestaurantData);
 		return res.status(200).json({ message: "Restaurant updated successfully." });
 	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "Internal server error" });
+		const err = new CustomError('Error in updating restaurant', 404);
+		next(err);
 	}
 }

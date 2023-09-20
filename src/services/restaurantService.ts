@@ -12,13 +12,9 @@ export async function getAllRestaurants() {
 }
 
 export async function getPopularRestaurants() {
-	try {
-		const filter = { popularity: { $gte: 3 } };
-		const popularRestaurants = await Restaurant.find(filter).populate("chef");
-		return popularRestaurants;
-	} catch (e) {
-		throw Error("Error while Paginating restaurants");
-	}
+	const filter = { popularity: { $gte: 3 } };
+	const popularRestaurants = await Restaurant.find(filter).populate("chef");
+	return popularRestaurants;
 }
 
 export async function getRestaurantByName(restaurantName: string) {
