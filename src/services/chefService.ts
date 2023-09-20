@@ -6,7 +6,6 @@ export async function getAllChefs() {
 		const allChefs = await Chef.find();
 		return allChefs;
 	} catch (e) {
-		console.log(e);
 		throw Error("Error while getting all chefs");
 	}
 }
@@ -28,7 +27,6 @@ export async function addChef(newChefData: chef) {
 		const savedChef = await newChef.save();
 		return savedChef;
 	} catch (e) {
-		console.log(e);
 		throw Error("Error while adding chef");
 	}
 }
@@ -52,7 +50,6 @@ export async function deleteChefByID(id: string) {
 	try {
 		Chef.findByIdAndDelete(id);
 	} catch (e) {
-		console.log(e);
 		throw Error("Error while deleting chef by id");
 	}
 }

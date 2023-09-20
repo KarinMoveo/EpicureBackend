@@ -15,8 +15,8 @@ import Restaurant from "../models/Restaurant";
 export async function getAllRestaurantsController(req: Request, res: Response, next: NextFunction) {
 	try {
 		const allRestaurants = await getAllRestaurants();
-		// const filteredRestaurants = filterRestaurants({ ...req.query, allRestaurants });
-		return res.json(allRestaurants);
+		const filteredRestaurants = filterRestaurants({ ...req.query, allRestaurants });
+		return res.json(filteredRestaurants);
 	} catch (error) {
 		return res.status(400).json({ status: 400, message: "Oh oh!" });
 	}

@@ -40,7 +40,6 @@ export async function addRestaurant(newRestaurantData: restaurant) {
 		const savedRestaurant = await newRestaurant.save();
 		return savedRestaurant;
 	} catch (e) {
-		console.log(e);
 		throw Error("Error while adding restaurant");
 	}
 }
@@ -64,7 +63,6 @@ export async function deleteRestaurantByID(id: string) {
 	try {
 		Restaurant.findByIdAndDelete(id);
 	} catch (e) {
-		console.log(e);
 		throw Error("Error while deleting restaurant");
 	}
 }
