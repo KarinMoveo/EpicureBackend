@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { restaurant } from "../mockData/data/types";
 import Restaurant from "../models/Restaurant";
 
@@ -12,9 +13,9 @@ export async function getAllRestaurants() {
 
 export async function getPopularRestaurants() {
 	try {
-		  const filter = { popularity: { $gte: 3 } };
-		  const popularRestaurants = await Restaurant.find(filter).populate("chef");
-		  return popularRestaurants;
+		const filter = { popularity: { $gte: 3 } };
+		const popularRestaurants = await Restaurant.find(filter).populate("chef");
+		return popularRestaurants;
 	} catch (e) {
 		throw Error("Error while Paginating restaurants");
 	}
@@ -22,17 +23,17 @@ export async function getPopularRestaurants() {
 
 export async function getRestaurantByName(restaurantName: string) {
 	try {
-	  const restaurant = await Restaurant.findOne({ name: restaurantName }).populate("chef");
-  
-	  if (!restaurant) {
-		throw new Error("Restaurant not found");
-	  }
-  
-	  return restaurant;
+		const restaurant = await Restaurant.findOne({ name: restaurantName }).populate("chef").populate("dishes");
+
+		if (!restaurant) {
+			throw new Error("Restaurant not found");
+		}
+
+		return restaurant;
 	} catch (error) {
-	  throw new Error("Error while getting restaurant by name");
+		throw new Error("Error while getting restaurant by name");
 	}
-  }
+}
 
 export async function addRestaurant(newRestaurantData: restaurant) {
 	try {
@@ -52,6 +53,16 @@ export async function updateRestaurantByID(id: string, updatedRestaurantData: re
 		}
 		existingRestaurant.name = updatedRestaurantData.name;
 		existingRestaurant.image = updatedRestaurantData.image;
+		existingRestaurant.popularity = updatedRestaurantData.popularity;
+		existingRestaurant.address = updatedRestaurantData.address;
+		existingRestaurant.from = updatedRestaurantData.from;
+		existingRestaurant.to = updatedRestaurantData.to;
+		existingRestaurant.openingDate = updatedRestaurantData.openingDate;
+		existingRestaurant.averagePrice = updatedRestaurantData.averagePrice;
+		existingRestaurant.distance = updatedRestaurantData.distance;
+		existingRestaurant.chef = new Types.ObjectId(updatedRestaurantData.chef);
+		existingRestaurant.dishes = updatedRestaurantData.dishes.map((dishId: any) => new Types.ObjectId(dishId));
+
 		const updatedRestaurant = await existingRestaurant.save();
 		return updatedRestaurant;
 	} catch (error) {
@@ -61,7 +72,11 @@ export async function updateRestaurantByID(id: string, updatedRestaurantData: re
 
 export async function deleteRestaurantByID(id: string) {
 	try {
-		Restaurant.findByIdAndDelete(id);
+		const deletedRestaurant = await Restaurant.findByIdAndDelete(id);
+		if (!deletedRestaurant) {
+			throw Error("Restaurant not found");
+		}
+		return deletedRestaurant;
 	} catch (e) {
 		throw Error("Error while deleting restaurant");
 	}

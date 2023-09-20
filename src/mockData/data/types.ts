@@ -1,27 +1,24 @@
 export interface chef{
-    id: number,
     name: string;
     image: string;
     summary: string;
     popularity: number;
-    restaurants: restaurant[];
     isNew: boolean;
+    restaurants: restaurant[];
 }
 
 export interface restaurant{
     name: string;
-    chef: string;
-    popularity: number;
     image: string;
+    popularity: number;
     address: string;
     from: string;
     to: string;
     openingDate: string;
-    dishes: dish[];
     averagePrice: number;
-    lat: number;
-    long: number;
     distance: number;
+    chef: string;
+    dishes: dish[];
 }
 
 export interface dish{
@@ -30,8 +27,8 @@ export interface dish{
     ingredients: string;
     icon: string;
     price: number;
-    changes: string[];
     side: string[];
-    restaurant: string;
+    changes: string[];
     mealType: string[];
+    restaurant: string;
 }

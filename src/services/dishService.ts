@@ -1,19 +1,16 @@
+import { Types } from "mongoose";
 import { dish } from "../mockData/data/types";
 import Dish from "../models/Dish";
 
 export async function getAllDishes() {
-	try {
-		const allDishes = await Dish.find();
-		return allDishes;
-	} catch (e) {
-		throw Error("Error while getting all dishes");
-	}
+	const allDishes = await Dish.find().exec();
+	return allDishes;
 }
 
 export async function getSignatureDishes() {
 	try {
 		const allDishes = await getAllDishes();
-		const signatureDishes = allDishes.slice(0,3);
+		const signatureDishes = allDishes.slice(0, 3);
 		return signatureDishes;
 	} catch (e) {
 		throw Error("Error while getting signature dishes");
@@ -38,6 +35,14 @@ export async function updateDishByID(id: string, updatedDishData: dish) {
 		}
 		existingDish.name = updatedDishData.name;
 		existingDish.image = updatedDishData.image;
+		existingDish.ingredients = updatedDishData.ingredients;
+		existingDish.icon = updatedDishData.icon;
+		existingDish.price = updatedDishData.price;
+		existingDish.side = updatedDishData.side;
+		existingDish.changes = updatedDishData.changes;
+		existingDish.mealType = updatedDishData.mealType;
+		existingDish.restaurant = new Types.ObjectId(updatedDishData.restaurant);
+
 		const updatedDish = await existingDish.save();
 		return updatedDish;
 	} catch (error) {
@@ -45,10 +50,13 @@ export async function updateDishByID(id: string, updatedDishData: dish) {
 	}
 }
 
-
 export async function deleteDishByID(id: string) {
 	try {
-		Dish.findByIdAndDelete(id);
+		const deletedDish = await Dish.findByIdAndDelete(id);
+		if (!deletedDish) {
+			throw Error("Dish not found");
+		}
+		return deletedDish;
 	} catch (e) {
 		throw Error("Error while deleting dish");
 	}

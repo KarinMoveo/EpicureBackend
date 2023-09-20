@@ -8,9 +8,7 @@ import {
 	updateRestaurantByID,
 } from "../services/restaurantService";
 import { filterRestaurants } from "../utils";
-import { restaurant } from "../mockData/data/types";
-import restaurantsMockData from "../mockData/data/restaurants";
-import Restaurant from "../models/Restaurant";
+
 
 export async function getAllRestaurantsController(req: Request, res: Response, next: NextFunction) {
 	try {
@@ -54,7 +52,22 @@ export async function deleteRestaurantController(req: Request, res: Response, ne
 
 export async function addRestaurantController(req: Request, res: Response, next: NextFunction) {
 	try {
-		const addedDish = await addRestaurant(restaurantsMockData[0]);
+		const { name, image, popularity, address, from, to, openingDate, averagePrice, distance, chef, dishes } =
+			req.body;
+		const newRestaurantData = {
+			name,
+			image,
+			popularity,
+			address,
+			from,
+			to,
+			openingDate,
+			averagePrice,
+			distance,
+			chef,
+			dishes,
+		};
+		const addedDish = await addRestaurant(newRestaurantData);
 		return res.status(201).json({ message: "Restaurant added successfully." });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" });
@@ -64,7 +77,22 @@ export async function addRestaurantController(req: Request, res: Response, next:
 export async function updateRestaurantController(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { id } = req.params;
-		await updateRestaurantByID(id, restaurantsMockData[0]);
+		const { name, image, popularity, address, from, to, openingDate, averagePrice, distance, chef, dishes } =
+			req.body;
+		const newRestaurantData = {
+			name,
+			image,
+			popularity,
+			address,
+			from,
+			to,
+			openingDate,
+			averagePrice,
+			distance,
+			chef,
+			dishes,
+		};
+		await updateRestaurantByID(id, newRestaurantData);
 		return res.status(200).json({ message: "Restaurant updated successfully." });
 	} catch (error) {
 		console.error(error);

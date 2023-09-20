@@ -6,7 +6,7 @@ const ChefSchema = new Schema({
     summary: String,
     popularity: Number,
     isNew: Boolean,
-    restaurants: [{ type: Schema.Types.ObjectId, ref: 'Restaurant', required: true }],
+    restaurants: [{ type: Schema.Types.ObjectId, ref: 'Restaurant' }],
 });
 
 const Chef = model('Chef', ChefSchema);
