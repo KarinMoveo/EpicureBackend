@@ -18,8 +18,7 @@ export async function getSignatureDishesController(req: Request, res: Response, 
 		const signatureDishes = await getSignatureDishes();
 		return res.json(signatureDishes);
 	} catch (error) {
-		const err = new CustomError('Error in getting signature dishes', 404);
-		next(err);
+		next(error);
 	}
 }
 
@@ -29,8 +28,7 @@ export async function deleteDishController(req: Request, res: Response, next: Ne
 		await deleteDishByID(id);
 		return res.status(201).json({ message: "Dish deleted successfully." });
 	} catch (error) {
-		const err = new CustomError('Error in deleting dish', 404);
-		next(err);
+		next(error);
 	}
 }
 
@@ -51,8 +49,7 @@ export async function addDishController(req: Request, res: Response, next: NextF
 		const addedDish = await addDish(newDishData);
 		return res.status(201).json({ message: "Dish added successfully." });
 	} catch (error) {
-		const err = new CustomError('Error in adding dish', 404);
-		next(err);
+		next(error);
 	}
 }
 
@@ -74,7 +71,6 @@ export async function updateDishController(req: Request, res: Response, next: Ne
 		await updateDishByID(id, newDishData);
 		return res.status(201).json({ message: "Dish updated successfully." });
 	} catch (error) {
-		const err = new CustomError('Error in updating dish', 404);
-		next(err);
+		next(error);
 	}
 }

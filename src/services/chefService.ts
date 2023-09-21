@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
-import { chef } from "../mockData/data/types";
+import { chef } from "../shared/types";
 import Chef from "../models/Chef";
+import CustomError from "../shared/CustomError";
 
 export async function getAllChefs() {
 	const allChefs = await Chef.find().populate("restaurants");
@@ -25,12 +26,15 @@ export async function updateChefByID(id: string, updatedChefData: chef) {
 	if (!existingChef) {
 		throw new Error("Chef not found");
 	}
-	existingChef.name = updatedChefData.name;
-	existingChef.image = updatedChefData.image;
-	existingChef.summary = updatedChefData.summary;
-	existingChef.popularity = updatedChefData.popularity;
-	existingChef.restaurants = updatedChefData.restaurants.map((restaurantId: any) => new Types.ObjectId(restaurantId));
-	existingChef.isNew = updatedChefData.isNew;
+
+	const { name, image, summary, popularity, restaurants, isNew } = updatedChefData;
+
+	existingChef.name = name;
+	existingChef.image = image;
+	existingChef.summary = summary;
+	existingChef.popularity = popularity;
+	existingChef.restaurants = restaurants.map((restaurantId: any) => new Types.ObjectId(restaurantId));
+	existingChef.isNew = isNew;
 
 	const updatedChef = await existingChef.save();
 	return updatedChef;
@@ -39,7 +43,7 @@ export async function updateChefByID(id: string, updatedChefData: chef) {
 export async function deleteChefByID(id: string) {
 	const deletedChef = await Chef.findByIdAndDelete(id);
 	if (!deletedChef) {
-		throw Error("Chef not found");
+		throw new CustomError("Chef not found", 404);
 	}
 	return deletedChef;
 }

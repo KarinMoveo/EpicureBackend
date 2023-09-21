@@ -1,4 +1,4 @@
-import {restaurant} from './types';
+import {restaurant} from '../../shared/types';
 import dishesMockData from './dishes';
 
 const restaurantsMockData : restaurant[]= [

@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 
-import { db } from "./connectMongoDB";
+import { db } from "./src/db/connectMongoDB";
 
 import restaurantRoute from "./src/routes/restaurantRoute";
 import chefRoute from "./src/routes/chefRoute";
@@ -22,7 +22,7 @@ const port = process.env.PORT || 5000;
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error instanceof CustomError) {
-    return res.status(error.statusCode).json({
+    return res.status(error.status).json({
       status: error.status,
       message: error.message,
     });
