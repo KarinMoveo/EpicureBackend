@@ -29,6 +29,13 @@ export async function getRestaurantById(restaurantId: string) {
 export async function addRestaurant(newRestaurantData: restaurant) {
 	const newRestaurant = new Restaurant(newRestaurantData);
 	const savedRestaurant = await newRestaurant.save();
+	const chefId = newRestaurantData.chef;
+	await Chef.findByIdAndUpdate(chefId, { $push: { restaurants: savedRestaurant._id } });
+	await Promise.all(
+		newRestaurantData.dishes.map(async (dishId: any) => {
+			await Dish.findByIdAndUpdate(dishId, { restaurant: savedRestaurant._id });
+		})
+	);
 	return savedRestaurant;
 }
 
@@ -51,6 +58,33 @@ export async function updateRestaurantByID(id: string, updatedRestaurantData: re
 	existingRestaurant.distance = distance;
 	existingRestaurant.chef = new Types.ObjectId(chef);
 	existingRestaurant.dishes = dishes.map((dishId: any) => new Types.ObjectId(dishId));
+
+	if (existingRestaurant.chef.toString() !== chef) {
+		await Chef.findByIdAndUpdate(existingRestaurant.chef, {
+			$pull: { restaurants: id },
+		});
+		// Update the restaurant's chef
+		existingRestaurant.chef = new Types.ObjectId(chef);
+		// Add the restaurant to the new chef's restaurants array
+		await Chef.findByIdAndUpdate(chef, {
+			$push: { restaurants: id },
+		});
+	}
+
+	await Promise.all(
+		dishes.map(async (dishId: any) => {
+			if (!existingRestaurant.dishes.some((dish) => dish.toString() === dishId)) {
+				// Remove the restaurant from the old dish's restaurant field
+				await Dish.findByIdAndUpdate(dishId, {
+					$pull: { restaurant: id },
+				});
+				// Update the restaurant field in the dish
+				await Dish.findByIdAndUpdate(dishId, {
+					$push: { restaurant: id },
+				});
+			}
+		})
+	);
 
 	const updatedRestaurant = await existingRestaurant.save();
 	return updatedRestaurant;
