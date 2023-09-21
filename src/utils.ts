@@ -57,10 +57,10 @@ export function filterChefs({allChefs, category}: any) {
 	return tempChefs;
 }
 
-export function filterDishes({allDishes, category}: any) {
+export function filterDishes({restaurantsDishes, category}: any) {
 	const tempDishes: dish[] = [];
 
-	allDishes.forEach((dish: dish) => {
+	restaurantsDishes.forEach((dish: dish) => {
 		
 		if (dish.mealType.includes(category)) {
 				tempDishes.push(dish);
