@@ -11,8 +11,8 @@ const router = Router();
 
 // router.get("/", getAllDishesController);
 router.get("/signatureDishes", getSignatureDishesController);
-router.delete("/dish/:id", deleteDishController);
-router.post("/dish", addDishController);
-router.put("/dish/:id", updateDishController);
+router.delete("/:id", deleteDishController);
+router.post("/", addDishController);
+router.put("/:id", updateDishController);
 
 export default router;

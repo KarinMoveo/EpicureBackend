@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { addDish, deleteDishByID, getAllDishes, getSignatureDishes, updateDishByID } from "../services/dishService";
 // import { filterDishes } from "../utils";
-import CustomError from "../shared/CustomError";
 
 // export async function getAllDishesController(req: Request, res: Response, next: NextFunction) {
 // 	try {

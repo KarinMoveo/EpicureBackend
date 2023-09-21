@@ -6,9 +6,9 @@ const router = Router();
 router.get('/', getAllRestaurantsController); 
 router.get('/popular', getPopularRestaurantsController); 
 router.get('/:id', getRestaurantByIdController); 
-router.delete('/restaurant/:id', deleteRestaurantController); 
-router.post('/restaurant', addRestaurantController);
-router.put('/restaurant/:id', updateRestaurantController);
+router.delete('/:id', deleteRestaurantController); 
+router.post('/', addRestaurantController);
+router.put('/:id', updateRestaurantController);
 
 
 
