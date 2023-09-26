@@ -32,3 +32,9 @@ export interface dish{
     mealType: string[];
     restaurant: string;
 }
+
+export interface user{
+    email: string;
+    password: string;
+    isAdmin?: boolean;
+}
