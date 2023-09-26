@@ -3,20 +3,18 @@ import User from "../models/User";
 import CustomError from "../shared/CustomError";
 import bcrypt from "bcrypt";
 
-
 export async function addUser(newUserData: user) {
 
 	const existingUser = await User.findOne({ email: newUserData.email });
 
 	if (existingUser) {
-	  throw new CustomError("Email is already in use", 409);
+		throw new CustomError("Email is already in use", 409);
 	}
-  
+
 	const newUser = new User(newUserData);
 	const savedUser = await newUser.save();
 	return savedUser;
 }
-
 
 export async function loginUser(loginData: user) {
 	const { email, password } = loginData;

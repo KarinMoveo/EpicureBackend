@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { addUser, loginUser } from "../services/userService";
-import User from "../models/User";
-import CustomError from "../shared/CustomError";
-import { user } from "../shared/types";
-import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function addUserController(req: Request, res: Response, next: NextFunction) {
 	try {
@@ -13,6 +12,15 @@ export async function addUserController(req: Request, res: Response, next: NextF
 			password,
 		};
 		const addedUser = await addUser(newUserData);
+		const token = jwt.sign({ userId: addedUser._id }, process.env.SECRET_KEY as jwt.Secret, {
+			expiresIn: "1h",
+		});
+		console.log(process.env.SECRET_KEY);
+		res.cookie("token", token, {
+			httpOnly: true,
+			maxAge: 3600000,
+		});
+		console.log("dd");
 		return res.status(201).json({ message: "User added successfully." });
 	} catch (error) {
 		next(error);
