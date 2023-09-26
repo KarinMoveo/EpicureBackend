@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import { db } from "./src/db/connectMongoDB";
 
@@ -14,13 +15,16 @@ const app = express();
 const corsOptions = {
   origin: 'http://localhost:3000', 
   credentials: true,
+  
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
 
 
 app.use(express.static("assets"));
 app.use(express.json());
+
 app.use("/restaurants", restaurantRoute);
 app.use("/chefs", chefRoute);
 app.use("/dishes", dishRoute);

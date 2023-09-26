@@ -4,7 +4,6 @@ import CustomError from "../shared/CustomError";
 import bcrypt from "bcrypt";
 
 export async function addUser(newUserData: user) {
-
 	const existingUser = await User.findOne({ email: newUserData.email });
 
 	if (existingUser) {
@@ -13,6 +12,12 @@ export async function addUser(newUserData: user) {
 
 	const newUser = new User(newUserData);
 	const savedUser = await newUser.save();
+
+	if (newUserData.email === process.env.ADMIN_EMAIL) {
+		savedUser.isAdmin = true;
+		await User.findOneAndUpdate({ email: newUserData.email }, { isAdmin: true });
+	}
+
 	return savedUser;
 }
 
