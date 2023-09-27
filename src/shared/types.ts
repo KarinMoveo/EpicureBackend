@@ -38,3 +38,9 @@ export interface user{
     password: string;
     isAdmin?: boolean;
 }
+
+export interface MyJwtPayload {
+	userId: string;
+	email: string;
+	isAdmin: boolean;
+}

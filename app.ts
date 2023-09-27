@@ -9,6 +9,7 @@ import chefRoute from "./src/routes/chefRoute";
 import dishRoute from "./src/routes/dishRoute";
 import userRoute from "./src/routes/userRoute";
 import CustomError from "./src/shared/CustomError";
+import authMiddleware from "./src/shared/authMiddleware";
 
 const app = express();
 
@@ -25,10 +26,13 @@ app.use(cookieParser());
 app.use(express.static("assets"));
 app.use(express.json());
 
+app.use("/auth", userRoute);
+
+app.use(authMiddleware);
+
 app.use("/restaurants", restaurantRoute);
 app.use("/chefs", chefRoute);
 app.use("/dishes", dishRoute);
-app.use("/auth", userRoute);
 
 const port = process.env.PORT || 5000;
 

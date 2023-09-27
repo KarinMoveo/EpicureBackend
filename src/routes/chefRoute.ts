@@ -1,14 +1,13 @@
 import { Router } from 'express';
 import { addChefController, deleteChefController, getAllChefsController, getChefOfTheWeekController, updateChefController } from '../controllers/chefController'; 
-import { isAdmin } from '../shared/IsAdmin';
+import { isAdminMiddleware } from '../shared/isAdminMiddleware';
 
 const router = Router();
-
 
 router.get('/', getAllChefsController); 
 router.get('/chefOfTheWeek', getChefOfTheWeekController);
 
-router.use(isAdmin);
+router.use(isAdminMiddleware);
 
 router.delete('/:id', deleteChefController); 
 router.post('/', addChefController);

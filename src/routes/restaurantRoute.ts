@@ -7,7 +7,7 @@ import {
 	getRestaurantByIdController,
 	updateRestaurantController,
 } from "../controllers/restaurantController";
-import { isAdmin } from "../shared/IsAdmin";
+import { isAdminMiddleware } from "../shared/isAdminMiddleware";
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router.get("/", getAllRestaurantsController);
 router.get("/popular", getPopularRestaurantsController);
 router.get("/:id", getRestaurantByIdController);
 
-router.use(isAdmin);
+router.use(isAdminMiddleware);
 
 router.delete("/:id", deleteRestaurantController);
 router.post("/", addRestaurantController);

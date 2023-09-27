@@ -6,14 +6,14 @@ import {
 	getSignatureDishesController,
 	updateDishController,
 } from "../controllers/dishController";
-import { isAdmin } from "../shared/IsAdmin";
+import { isAdminMiddleware } from "../shared/isAdminMiddleware";
 
 const router = Router();
 
 // router.get("/", getAllDishesController);
 router.get("/signatureDishes", getSignatureDishesController);
 
-router.use(isAdmin);
+router.use(isAdminMiddleware);
 
 router.delete("/:id", deleteDishController);
 router.post("/", addDishController);

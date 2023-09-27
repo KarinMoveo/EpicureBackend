@@ -1,13 +1,10 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import CustomError from "./CustomError";
+import { MyJwtPayload } from "./types";
 
-interface MyJwtPayload {
-	userId: string;
-	isAdmin: boolean;
-}
 
-export function isAdmin(req: Request, res: Response, next: NextFunction) {
+export function isAdminMiddleware(req: Request, res: Response, next: NextFunction) {
 	const token = req.cookies.token;
 
 	if (!token) {
