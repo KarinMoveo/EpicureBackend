@@ -1,19 +1,35 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import { db } from "./src/db/connectMongoDB";
 
 import restaurantRoute from "./src/routes/restaurantRoute";
 import chefRoute from "./src/routes/chefRoute";
 import dishRoute from "./src/routes/dishRoute";
+import userRoute from "./src/routes/userRoute";
 import CustomError from "./src/shared/CustomError";
+import authMiddleware from "./src/shared/authMiddleware";
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true,
+  
+};
+
+app.use(cors(corsOptions));
+app.use(cookieParser());
+
 
 app.use(express.static("assets"));
 app.use(express.json());
+
+app.use("/auth", userRoute);
+
+// app.use(authMiddleware);
+
 app.use("/restaurants", restaurantRoute);
 app.use("/chefs", chefRoute);
 app.use("/dishes", dishRoute);
@@ -27,7 +43,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
       message: error.message,
     });
   }
-  return res.status(500).json({ status: 500, message: "Internal Server Error" });
+  return res.status(500).json({ status: 500, message: error.message });
 });
 
 

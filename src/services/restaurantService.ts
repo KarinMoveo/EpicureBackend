@@ -6,7 +6,7 @@ import Chef from "../models/Chef";
 import CustomError from "../shared/CustomError";
 
 export async function getAllRestaurants() {
-	const allRestaurants = await Restaurant.find().populate("chef");
+	const allRestaurants = await Restaurant.find().populate("chef").populate("dishes");
 	return allRestaurants;
 }
 
@@ -63,9 +63,7 @@ export async function updateRestaurantByID(id: string, updatedRestaurantData: re
 		await Chef.findByIdAndUpdate(existingRestaurant.chef, {
 			$pull: { restaurants: id },
 		});
-		// Update the restaurant's chef
 		existingRestaurant.chef = new Types.ObjectId(chef);
-		// Add the restaurant to the new chef's restaurants array
 		await Chef.findByIdAndUpdate(chef, {
 			$push: { restaurants: id },
 		});
@@ -74,11 +72,9 @@ export async function updateRestaurantByID(id: string, updatedRestaurantData: re
 	await Promise.all(
 		dishes.map(async (dishId: any) => {
 			if (!existingRestaurant.dishes.some((dish) => dish.toString() === dishId)) {
-				// Remove the restaurant from the old dish's restaurant field
 				await Dish.findByIdAndUpdate(dishId, {
 					$pull: { restaurant: id },
 				});
-				// Update the restaurant field in the dish
 				await Dish.findByIdAndUpdate(dishId, {
 					$push: { restaurant: id },
 				});

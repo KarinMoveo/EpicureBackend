@@ -29,7 +29,6 @@ export async function getPopularRestaurantsController(req: Request, res: Respons
 
 export async function getRestaurantByIdController(req: Request, res: Response, next: NextFunction) {
 	const { id } = req.params;
-
 	try {
 		const restaurant = await getRestaurantById(id);
 		return res.json(restaurant);
