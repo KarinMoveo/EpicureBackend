@@ -14,7 +14,7 @@ import authMiddleware from "./src/shared/authMiddleware";
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:3000', 
+  origin: ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true,
   
 };
@@ -28,7 +28,7 @@ app.use(express.json());
 
 app.use("/auth", userRoute);
 
-app.use(authMiddleware);
+// app.use(authMiddleware);
 
 app.use("/restaurants", restaurantRoute);
 app.use("/chefs", chefRoute);
