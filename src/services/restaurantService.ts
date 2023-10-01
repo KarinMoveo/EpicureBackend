@@ -1,14 +1,13 @@
 import { Types } from "mongoose";
-import { restaurant } from "../mockData/data/types";
+import { restaurant } from "../shared/types";
 import Restaurant from "../models/Restaurant";
+import Dish from "../models/Dish";
+import Chef from "../models/Chef";
+import CustomError from "../shared/CustomError";
 
 export async function getAllRestaurants() {
-	try {
-		const allRestaurants = await Restaurant.find().populate("chef");
-		return allRestaurants;
-	} catch (e) {
-		throw Error("Error while Paginating restaurants");
-	}
+	const allRestaurants = await Restaurant.find().populate("chef");
+	return allRestaurants;
 }
 
 export async function getPopularRestaurants() {
@@ -17,63 +16,96 @@ export async function getPopularRestaurants() {
 	return popularRestaurants;
 }
 
-export async function getRestaurantByName(restaurantName: string) {
-	try {
-		const restaurant = await Restaurant.findOne({ name: restaurantName }).populate("chef").populate("dishes");
+export async function getRestaurantById(restaurantId: string) {
+	const restaurant = await Restaurant.findOne({ _id: restaurantId }).populate("chef").populate("dishes");
 
-		if (!restaurant) {
-			throw new Error("Restaurant not found");
-		}
-
-		return restaurant;
-	} catch (error) {
-		throw new Error("Error while getting restaurant by name");
+	if (!restaurant) {
+		throw new CustomError("Restaurant not found", 404);
 	}
+
+	return restaurant;
 }
 
 export async function addRestaurant(newRestaurantData: restaurant) {
-	try {
-		const newRestaurant = new Restaurant(newRestaurantData);
-		const savedRestaurant = await newRestaurant.save();
-		return savedRestaurant;
-	} catch (e) {
-		throw Error("Error while adding restaurant");
-	}
+	const newRestaurant = new Restaurant(newRestaurantData);
+	const savedRestaurant = await newRestaurant.save();
+	const chefId = newRestaurantData.chef;
+	await Chef.findByIdAndUpdate(chefId, { $push: { restaurants: savedRestaurant._id } });
+	await Promise.all(
+		newRestaurantData.dishes.map(async (dishId: any) => {
+			await Dish.findByIdAndUpdate(dishId, { restaurant: savedRestaurant._id });
+		})
+	);
+	return savedRestaurant;
 }
 
 export async function updateRestaurantByID(id: string, updatedRestaurantData: restaurant) {
-	try {
-		const existingRestaurant = await Restaurant.findById(id);
-		if (!existingRestaurant) {
-			throw new Error("Restaurant not found");
-		}
-		existingRestaurant.name = updatedRestaurantData.name;
-		existingRestaurant.image = updatedRestaurantData.image;
-		existingRestaurant.popularity = updatedRestaurantData.popularity;
-		existingRestaurant.address = updatedRestaurantData.address;
-		existingRestaurant.from = updatedRestaurantData.from;
-		existingRestaurant.to = updatedRestaurantData.to;
-		existingRestaurant.openingDate = updatedRestaurantData.openingDate;
-		existingRestaurant.averagePrice = updatedRestaurantData.averagePrice;
-		existingRestaurant.distance = updatedRestaurantData.distance;
-		existingRestaurant.chef = new Types.ObjectId(updatedRestaurantData.chef);
-		existingRestaurant.dishes = updatedRestaurantData.dishes.map((dishId: any) => new Types.ObjectId(dishId));
+	const existingRestaurant = await Restaurant.findById(id);
+	const { name, image, popularity, address, from, to, openingDate, averagePrice, distance, chef, dishes } =
+		updatedRestaurantData;
 
-		const updatedRestaurant = await existingRestaurant.save();
-		return updatedRestaurant;
-	} catch (error) {
-		throw new Error("Error while updating restaurant by id");
+	if (!existingRestaurant) {
+		throw new CustomError("Restaurant not found", 404);
 	}
+	existingRestaurant.name = name;
+	existingRestaurant.image = image;
+	existingRestaurant.popularity = popularity;
+	existingRestaurant.address = address;
+	existingRestaurant.from = from;
+	existingRestaurant.to = to;
+	existingRestaurant.openingDate = openingDate;
+	existingRestaurant.averagePrice = averagePrice;
+	existingRestaurant.distance = distance;
+	existingRestaurant.chef = new Types.ObjectId(chef);
+	existingRestaurant.dishes = dishes.map((dishId: any) => new Types.ObjectId(dishId));
+
+	if (existingRestaurant.chef.toString() !== chef) {
+		await Chef.findByIdAndUpdate(existingRestaurant.chef, {
+			$pull: { restaurants: id },
+		});
+		// Update the restaurant's chef
+		existingRestaurant.chef = new Types.ObjectId(chef);
+		// Add the restaurant to the new chef's restaurants array
+		await Chef.findByIdAndUpdate(chef, {
+			$push: { restaurants: id },
+		});
+	}
+
+	await Promise.all(
+		dishes.map(async (dishId: any) => {
+			if (!existingRestaurant.dishes.some((dish) => dish.toString() === dishId)) {
+				// Remove the restaurant from the old dish's restaurant field
+				await Dish.findByIdAndUpdate(dishId, {
+					$pull: { restaurant: id },
+				});
+				// Update the restaurant field in the dish
+				await Dish.findByIdAndUpdate(dishId, {
+					$push: { restaurant: id },
+				});
+			}
+		})
+	);
+
+	const updatedRestaurant = await existingRestaurant.save();
+	return updatedRestaurant;
 }
 
 export async function deleteRestaurantByID(id: string) {
-	try {
-		const deletedRestaurant = await Restaurant.findByIdAndDelete(id);
-		if (!deletedRestaurant) {
-			throw Error("Restaurant not found");
-		}
-		return deletedRestaurant;
-	} catch (e) {
-		throw Error("Error while deleting restaurant");
+	const restaurantToDelete = await Restaurant.findById(id);
+	if (!restaurantToDelete) {
+		throw new CustomError("Restaurant not found", 404);
 	}
+
+	const chefId = restaurantToDelete.chef;
+
+	await Dish.deleteMany({ restaurant: id });
+
+	await Chef.findByIdAndUpdate(chefId, { $pull: { restaurants: id } });
+
+	const deletedRestaurant = await Restaurant.findByIdAndDelete(id);
+	if (!deletedRestaurant) {
+		throw Error("Restaurant not found");
+	}
+
+	return deletedRestaurant;
 }

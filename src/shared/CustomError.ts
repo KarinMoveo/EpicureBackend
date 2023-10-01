@@ -1,16 +1,16 @@
 interface CustomErrorInterface extends Error {
-    statusCode: number;
-    status: string;
+    status: number;
+    message: string;
   }
   
   class CustomError extends Error implements CustomErrorInterface {
-    statusCode: number;
-    status: string;
+    status: number;
+    message: string;
   
-    constructor(message: string, statusCode: number) {
+    constructor(message: string, status: number) {
       super(message);
-      this.statusCode = statusCode;
-      this.status = statusCode >= 400 && statusCode < 500 ? 'fail' : 'error';
+      this.status = status;
+      this.message = message;
     }
   }
   

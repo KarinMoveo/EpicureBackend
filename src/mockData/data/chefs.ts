@@ -1,4 +1,4 @@
-import {chef} from './types';
+import {chef} from '../../shared/types';
 import restaurantsMockData from './restaurants';
 
 const chefsMockData: chef[] = [

@@ -1,6 +1,6 @@
 import {garbanzoFrito, padKiMao, smokedPizza} from "../../../assets/dishes/index";
 import {spicy, vegan, vegetarian} from '../../../assets/dishesIcons/index';
-import {dish} from './types';
+import {dish} from '../../shared/types';
 
 
 const dishesMockData : dish[]= [

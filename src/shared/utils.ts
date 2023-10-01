@@ -1,4 +1,4 @@
-import { chef, dish, restaurant } from "./mockData/data/types";
+import { chef, dish, restaurant } from "./types";
 
 function isRestaurantOpen(from: string, to: string): boolean {
 	const now = new Date();
@@ -11,7 +11,14 @@ function isRestaurantOpen(from: string, to: string): boolean {
 	return now >= fromTime && now <= toTime;
 }
 
-export function filterRestaurants({allRestaurants, category, minPrice = 12, maxPrice = 357, distance = 100, rating = 31 }: any) {
+export function filterRestaurants({
+	allRestaurants,
+	category,
+	minPrice = 12,
+	maxPrice = 357,
+	distance = 100,
+	rating = 31,
+}: any) {
 	const tempRestaurants: restaurant[] = [];
 	const popularity = category === "Most Popular" ? 4 : 0;
 	const restaurantOpeningYear = category === "New" ? 2020 : 0;
@@ -20,7 +27,7 @@ export function filterRestaurants({allRestaurants, category, minPrice = 12, maxP
 		const [day, month, year] = restaurant.openingDate.split(".");
 		const isRestaurantCurrentlyOpen = category !== "Open Now" || isRestaurantOpen(restaurant.from, restaurant.to);
 
-        const restaurantRatingBitWise = 1 << (restaurant.popularity - 1) 
+		const restaurantRatingBitWise = 1 << (restaurant.popularity - 1);
 
 		if (
 			restaurant.popularity >= popularity &&
@@ -29,7 +36,7 @@ export function filterRestaurants({allRestaurants, category, minPrice = 12, maxP
 			restaurant.averagePrice >= minPrice &&
 			restaurant.averagePrice <= maxPrice &&
 			restaurant.distance <= distance &&
-            (rating | restaurantRatingBitWise) == rating
+			(rating | restaurantRatingBitWise) == rating
 		) {
 			tempRestaurants.push(restaurant);
 		}
@@ -38,18 +45,12 @@ export function filterRestaurants({allRestaurants, category, minPrice = 12, maxP
 	return tempRestaurants;
 }
 
-
-export function filterChefs({allChefs, category}: any) {
+export function filterChefs({ allChefs, category }: any) {
 	const tempChefs: chef[] = [];
 	const mostViewedChefs = category === "Most Viewed" ? 4 : 0;
 
 	allChefs.forEach((chef: chef) => {
-		
-		if (
-			chef.popularity >= mostViewedChefs &&
-			(category !== "New" || chef.isNew === true)
-			
-			) {
+		if (chef.popularity >= mostViewedChefs && (category !== "New" || chef.isNew === true)) {
 			tempChefs.push(chef);
 		}
 	});
@@ -57,15 +58,6 @@ export function filterChefs({allChefs, category}: any) {
 	return tempChefs;
 }
 
-export function filterDishes({restaurantsDishes, category}: any) {
-	const tempDishes: dish[] = [];
-
-	restaurantsDishes.forEach((dish: dish) => {
-		
-		if (dish.mealType.includes(category)) {
-				tempDishes.push(dish);
-		}
-	});
-
-	return tempDishes;
+export function filterDishes({ restaurantsDishes, category }: any) {
+	return restaurantsDishes.filter((dish: dish) => dish.mealType.includes(category)).map((dish: dish) => dish);
 }
