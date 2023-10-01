@@ -5,7 +5,7 @@ import CustomError from "../shared/CustomError";
 import Restaurant from "../models/Restaurant";
 
 export async function getAllDishes() {
-	const allDishes = await Dish.find().exec();
+	const allDishes = await Dish.find().populate("restaurant");
 	return allDishes;
 }
 

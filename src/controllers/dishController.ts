@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import { addDish, deleteDishByID, getAllDishes, getSignatureDishes, updateDishByID } from "../services/dishService";
-// import { filterDishes } from "../utils";
+import { filterDishes } from "../shared/utils";
 
-// export async function getAllDishesController(req: Request, res: Response, next: NextFunction) {
-// 	try {
-// 		const restaurantsDishes = await getAllDishes();
-// 		const filteredDishes = filterDishes({ ...req.query, restaurantsDishes });
-// 		return res.json(filteredDishes);
-// 	} catch (error : any) {
-// 		return res.status(400).json({ status: 400, message: error.message });
-// 	}
-// }
+export async function getAllDishesController(req: Request, res: Response, next: NextFunction) {
+	try {
+		const restaurantsDishes = await getAllDishes();
+		// const filteredDishes = filterDishes({ ...req.query, restaurantsDishes });
+		return res.json(restaurantsDishes);
+	} catch (error : any) {
+		return res.status(400).json({ status: 400, message: error.message });
+	}
+}
 
 export async function getSignatureDishesController(req: Request, res: Response, next: NextFunction) {
 	try {
