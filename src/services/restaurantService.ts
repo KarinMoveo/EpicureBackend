@@ -38,7 +38,6 @@ export async function addRestaurant(newRestaurantData: restaurant) {
 	);
 	return savedRestaurant;
 }
-
 export async function updateRestaurantByID(id: string, updatedRestaurantData: restaurant) {
 	const existingRestaurant = await Restaurant.findById(id);
 	const { name, image, popularity, address, from, to, openingDate, averagePrice, distance, chef, dishes } =
@@ -47,6 +46,9 @@ export async function updateRestaurantByID(id: string, updatedRestaurantData: re
 	if (!existingRestaurant) {
 		throw new CustomError("Restaurant not found", 404);
 	}
+
+	const oldChefId = existingRestaurant.chef?.toString();
+
 	existingRestaurant.name = name;
 	existingRestaurant.image = image;
 	existingRestaurant.popularity = popularity;
@@ -59,15 +61,13 @@ export async function updateRestaurantByID(id: string, updatedRestaurantData: re
 	existingRestaurant.chef = new Types.ObjectId(chef);
 	existingRestaurant.dishes = dishes.map((dishId: any) => new Types.ObjectId(dishId));
 
-	if (existingRestaurant.chef.toString() !== chef) {
-		await Chef.findByIdAndUpdate(existingRestaurant.chef, {
-			$pull: { restaurants: id },
-		});
-		existingRestaurant.chef = new Types.ObjectId(chef);
-		await Chef.findByIdAndUpdate(chef, {
-			$push: { restaurants: id },
-		});
-	}
+	await Chef.findByIdAndUpdate(oldChefId, {
+		$pull: { restaurants: id },
+	});
+
+	await Chef.findByIdAndUpdate(chef, {
+		$push: { restaurants: id },
+	});
 
 	await Promise.all(
 		dishes.map(async (dishId: any) => {
