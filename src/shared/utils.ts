@@ -13,7 +13,7 @@ function isRestaurantOpen(from: string, to: string): boolean {
 
 export function filterRestaurants({
 	allRestaurants,
-	category = "All",
+	category = 'Everything',
 	minPrice = 12,
 	maxPrice = 357,
 	distance = 100,
@@ -26,6 +26,8 @@ export function filterRestaurants({
 	allRestaurants.forEach((restaurant: restaurant) => {
 		const [year, month, day] = restaurant.openingDate.split("-");
 		const isRestaurantCurrentlyOpen = category !== "Open Now" || isRestaurantOpen(restaurant.from, restaurant.to);
+		// const isRestaurantCurrentlyOpen = category === "Open Now" && isRestaurantOpen(restaurant.from, restaurant.to);
+
 
 		const restaurantRatingBitWise = 1 << (restaurant.popularity - 1);
 

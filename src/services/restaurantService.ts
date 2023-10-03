@@ -12,7 +12,7 @@ export async function getAllRestaurants() {
 
 export async function getPopularRestaurants() {
 	const filter = { popularity: { $gte: 3 } };
-	const popularRestaurants = await Restaurant.find(filter).populate("chef");
+	const popularRestaurants = await Restaurant.find(filter).populate("chef").limit(3);
 	return popularRestaurants;
 }
 
