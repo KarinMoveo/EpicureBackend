@@ -26,9 +26,6 @@ export function filterRestaurants({
 	allRestaurants.forEach((restaurant: restaurant) => {
 		const [year, month, day] = restaurant.openingDate.split("-");
 		const isRestaurantCurrentlyOpen = category !== "Open Now" || isRestaurantOpen(restaurant.from, restaurant.to);
-		// const isRestaurantCurrentlyOpen = category === "Open Now" && isRestaurantOpen(restaurant.from, restaurant.to);
-
-
 		const restaurantRatingBitWise = 1 << (restaurant.popularity - 1);
 
 		if (

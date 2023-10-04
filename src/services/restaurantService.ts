@@ -105,3 +105,5 @@ export async function deleteRestaurantByID(id: string) {
 
 	return deletedRestaurant;
 }
+
+

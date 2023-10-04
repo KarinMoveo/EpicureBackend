@@ -67,16 +67,20 @@ export async function updateChefByID(id: string, updatedChefData: chef) {
 }
 
 export async function deleteChefByID(id: string) {
-	const deletedChef = await Chef.findById(id);
-	if (!deletedChef) {
-		throw new CustomError("Chef not found", 404);
-	}
-	const restaurantIds = deletedChef.restaurants;
+    const deletedChef = await Chef.findById(id);
+    if (!deletedChef) {
+        throw new CustomError("Chef not found", 404);
+    }
+
+    const restaurantIds = deletedChef.restaurants;
+
     await Chef.deleteOne({ _id: id });
+
     await Restaurant.updateMany(
-      { _id: { $in: restaurantIds } },
-      { $pull: { chefs: id } }
+        { _id: { $in: restaurantIds } },
+        { $set: { chef: null } } 
     );
 
-	return deletedChef;
+    return deletedChef;
 }
+

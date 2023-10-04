@@ -295,7 +295,7 @@ export async function addRestaurantController(req: Request, res: Response, next:
 			chef,
 			dishes,
 		};
-		const addedDish = await addRestaurant(newRestaurantData);
+		await addRestaurant(newRestaurantData);
 		return res.status(201).json({ message: "Restaurant added successfully." });
 	} catch (error) {
 		next(error);
