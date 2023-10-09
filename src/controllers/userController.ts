@@ -89,7 +89,7 @@ export async function loginUserController(req: Request, res: Response, next: Nex
 
 		res.cookie("token", token, { httpOnly: true });
 
-		return res.status(200).json({ message: "User connected successfully." });
+		return res.status(200).json({ message: "User connected successfully.", isAdmin:connectedUser.isAdmin });
 	} catch (error) {
 		next(error);
 	}

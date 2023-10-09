@@ -83,8 +83,6 @@ export async function deleteDishByID(id: string) {
 			$pull: { dishes: id },
 		});
 
-		console.log("Dish removed from restaurant:", id);
-
 		return deletedDish;
 	} catch (error) {
 		throw new CustomError("Error while deleting dish", 500);

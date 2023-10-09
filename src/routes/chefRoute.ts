@@ -7,7 +7,7 @@ const router = Router();
 router.get('/', getAllChefsController); 
 router.get('/chefOfTheWeek', getChefOfTheWeekController);
 
-// router.use(isAdminMiddleware);
+router.use(isAdminMiddleware);
 
 router.delete('/:id', deleteChefController); 
 router.post('/', addChefController);

@@ -27,8 +27,8 @@ app.use(express.static("assets"));
 app.use(express.json());
 
 app.use("/auth", userRoute);
-
 // app.use(authMiddleware);
+
 
 app.use("/restaurants", restaurantRoute);
 app.use("/chefs", chefRoute);
