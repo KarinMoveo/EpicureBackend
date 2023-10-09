@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const MONGODB_URI = "mongodb://localhost:27017/EpicureDB";
+dotenv.config();
+
+const MONGODB_URI = process.env.MONGODB_URI_ATLAS;
 
 export const db = mongoose
-	.connect(MONGODB_URI)
+	.connect(MONGODB_URI as string)
 	.then(() => {
 		console.log("Connected to MongoDB");
 	})

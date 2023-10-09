@@ -10,6 +10,9 @@ import dishRoute from "./src/routes/dishRoute";
 import userRoute from "./src/routes/userRoute";
 import CustomError from "./src/shared/CustomError";
 import authMiddleware from "./src/shared/authMiddleware";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
