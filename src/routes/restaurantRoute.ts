@@ -12,6 +12,7 @@ import { isAdminMiddleware } from "../shared/isAdminMiddleware";
 const router = Router();
 
 router.get("/", getAllRestaurantsController);
+
 router.get("/popular", getPopularRestaurantsController);
 router.get("/:id", getRestaurantByIdController);
 

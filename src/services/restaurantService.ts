@@ -5,6 +5,7 @@ import Dish from "../models/Dish";
 import Chef from "../models/Chef";
 import CustomError from "../shared/CustomError";
 
+  
 export async function getAllRestaurants() {
 	const allRestaurants = await Restaurant.find().populate("chef").populate("dishes");
 	return allRestaurants;

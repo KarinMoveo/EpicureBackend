@@ -92,9 +92,9 @@ export async function getAllRestaurantsController(req: Request, res: Response, n
 		const filteredRestaurants = filterRestaurants({ ...req.query, allRestaurants });
 		return res.json(filteredRestaurants);
 	} catch (error) {
-		next(error);	}
+		next(error);
+	}
 }
-
 
 /**
  * @api {get} /api/restaurants/popular Get a list of popular restaurants
@@ -157,7 +157,8 @@ export async function getPopularRestaurantsController(req: Request, res: Respons
 		const popularRestaurants = await getPopularRestaurants();
 		return res.json(popularRestaurants);
 	} catch (error) {
-		next(error);	}
+		next(error);
+	}
 }
 
 /**
@@ -219,7 +220,8 @@ export async function getRestaurantByIdController(req: Request, res: Response, n
 		const restaurant = await getRestaurantById(id);
 		return res.json(restaurant);
 	} catch (error) {
-		next(error);	}
+		next(error);
+	}
 }
 
 /**
