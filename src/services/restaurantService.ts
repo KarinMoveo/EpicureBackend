@@ -5,9 +5,60 @@ import Dish from "../models/Dish";
 import Chef from "../models/Chef";
 import CustomError from "../shared/CustomError";
 
-  
-export async function getAllRestaurants() {
-	const allRestaurants = await Restaurant.find().populate("chef").populate("dishes");
+function convertBitwiseToRatings(bitwiseValue: number) {
+	const ratings = [];
+	if (bitwiseValue & 1) ratings.push(1);
+	if (bitwiseValue & 2) ratings.push(2);
+	if (bitwiseValue & 4) ratings.push(3);
+	if (bitwiseValue & 8) ratings.push(4);
+	if (bitwiseValue & 16) ratings.push(5);
+
+	return ratings;
+}
+
+export async function getAllRestaurants(filterOptions: any) {
+	const {
+		page,
+		perPage,
+		minPrice = 12,
+		maxPrice = 357,
+		distance = 100,
+		rating = 31,
+		openingYear = 0,
+		isOpenNow = 0,
+	} = filterOptions;
+
+	const pipeline = [];
+
+	const popularityRatings = convertBitwiseToRatings(+rating);
+
+	const currentDate = new Date();
+	const hours = currentDate.getHours();
+	const minutes = currentDate.getMinutes();
+	const formattedHours = hours < 10 ? `0${hours}` : hours;
+	const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+	const currentTime = `${formattedHours}:${formattedMinutes}`;
+
+	pipeline.push({
+		$match: {
+			averagePrice: { $gte: +minPrice, $lte: +maxPrice },
+			distance: { $lte: +distance },
+			openingDate: { $gte: `${openingYear}-01-01` }, 
+			popularity: { $in: popularityRatings },
+			...(+isOpenNow && {
+				$expr: {
+					$and: [{ $gte: [currentTime, "$from"] }, { $lte: [currentTime, "$to"] }],
+				},
+			}), 
+		},
+	});
+
+
+	const skip = (+page - 1) * +perPage;
+	pipeline.push({ $skip: +skip });
+	pipeline.push({ $limit: +perPage });
+
+	const allRestaurants = await Restaurant.aggregate(pipeline);
 	return allRestaurants;
 }
 
@@ -106,5 +157,3 @@ export async function deleteRestaurantByID(id: string) {
 
 	return deletedRestaurant;
 }
-
-

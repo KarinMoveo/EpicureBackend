@@ -88,9 +88,9 @@ import { filterRestaurants } from "../shared/utils";
 
 export async function getAllRestaurantsController(req: Request, res: Response, next: NextFunction) {
 	try {
-		const allRestaurants = await getAllRestaurants();
-		const filteredRestaurants = filterRestaurants({ ...req.query, allRestaurants });
-		return res.json(filteredRestaurants);
+		const allRestaurants = await getAllRestaurants(req.query);
+		// const filteredRestaurants = filterRestaurants({ ...req.query, allRestaurants });
+		return res.json(allRestaurants);
 	} catch (error) {
 		next(error);
 	}
