@@ -4,6 +4,8 @@ import Dish from "../models/Dish";
 import CustomError from "../shared/CustomError";
 import Restaurant from "../models/Restaurant";
 
+const NULL_OBJECT_ID = new Types.ObjectId("000000000000000000000000");
+
 export async function getAllDishes() {
 	const allDishes = await Dish.find().populate("restaurant");
 	return allDishes;
@@ -24,36 +26,46 @@ export async function addDish(newDishData: dish) {
 }
 
 export async function updateDishByID(id: string, updatedDishData: dish) {
-	const existingDish = await Dish.findById(id);
 	const { name, image, ingredients, icon, price, side, changes, mealType, restaurant } = updatedDishData;
-	if (!existingDish) {
-		throw new CustomError("Dish not found", 404);
+
+	try {
+		const existingDish = await Dish.findById(id);
+		if (!existingDish) {
+			throw new CustomError("Dish not found", 404);
+		}
+
+		if (existingDish.restaurant?.toString() !== restaurant) {
+			if (existingDish.restaurant && existingDish.restaurant.toString() !== NULL_OBJECT_ID.toString()) {
+				await Restaurant.findByIdAndUpdate(existingDish.restaurant, {
+					$pull: { dishes: id },
+				});
+			}
+
+			if (restaurant) {
+				existingDish.restaurant = new Types.ObjectId(restaurant);
+
+				await Restaurant.findByIdAndUpdate(restaurant, {
+					$push: { dishes: id },
+				});
+			} else {
+				existingDish.restaurant = NULL_OBJECT_ID;
+			}
+		}
+
+		existingDish.name = name;
+		existingDish.image = image;
+		existingDish.ingredients = ingredients;
+		existingDish.icon = icon;
+		existingDish.price = price;
+		existingDish.side = side;
+		existingDish.changes = changes;
+		existingDish.mealType = mealType;
+
+		const updatedDish = await existingDish.save();
+		return updatedDish;
+	} catch (error) {
+		throw new CustomError("Error updating Dish", 500);
 	}
-
-	existingDish.name = name;
-	existingDish.image = image;
-	existingDish.ingredients = ingredients;
-	existingDish.icon = icon;
-	existingDish.price = price;
-	existingDish.side = side;
-	existingDish.changes = changes;
-	existingDish.mealType = mealType;
-	existingDish.restaurant = new Types.ObjectId(restaurant);
-
-	if (existingDish.restaurant.toString() !== restaurant) {
-		await Restaurant.findByIdAndUpdate(existingDish.restaurant, {
-			$pull: { restaurants: id },
-		});
-		// Update the restaurant's chef
-		existingDish.restaurant = new Types.ObjectId(restaurant);
-		// Add the restaurant to the new chef's restaurants array
-		await Restaurant.findByIdAndUpdate(restaurant, {
-			$push: { restaurants: id },
-		});
-	}
-
-	const updatedDish = await existingDish.save();
-	return updatedDish;
 }
 
 export async function deleteDishByID(id: string) {

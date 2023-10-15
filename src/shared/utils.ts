@@ -1,6 +1,6 @@
 import { chef, dish, restaurant } from "./types";
 
-function isRestaurantOpen(from: string, to: string): boolean {
+export function isRestaurantOpen(from: string, to: string): boolean {
 	const now = new Date();
 	const [fromHour, fromMinute] = from.split(":").map(Number);
 	const [toHour, toMinute] = to.split(":").map(Number);
@@ -13,7 +13,9 @@ function isRestaurantOpen(from: string, to: string): boolean {
 
 export function filterRestaurants({
 	allRestaurants,
-	category = "All",
+	category = 'Everything',
+	page,
+	perPage,
 	minPrice = 12,
 	maxPrice = 357,
 	distance = 100,
@@ -26,7 +28,6 @@ export function filterRestaurants({
 	allRestaurants.forEach((restaurant: restaurant) => {
 		const [year, month, day] = restaurant.openingDate.split("-");
 		const isRestaurantCurrentlyOpen = category !== "Open Now" || isRestaurantOpen(restaurant.from, restaurant.to);
-
 		const restaurantRatingBitWise = 1 << (restaurant.popularity - 1);
 
 		if (
@@ -41,6 +42,12 @@ export function filterRestaurants({
 			tempRestaurants.push(restaurant);
 		}
 	});
+
+	if (page && perPage) {
+	const startIndex = (+page - 1) * +perPage;
+	const endIndex = startIndex + +perPage;
+	return tempRestaurants.slice(startIndex, endIndex);
+	}
 
 	return tempRestaurants;
 }

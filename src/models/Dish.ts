@@ -37,7 +37,7 @@ const DishSchema = new Schema({
 			message: "Invalid mealType",
 		},
 	},
-	restaurant: { type: Schema.Types.ObjectId, ref: "Restaurant" },
+	restaurant: { type: Schema.Types.ObjectId, ref: "Restaurant"}, 
 });
 
 const Dish = model("Dish", DishSchema);
